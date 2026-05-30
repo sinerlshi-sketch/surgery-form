@@ -1,0 +1,504 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>手術說明表單</title>
+<meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" content="#1a73e8">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="手術說明">
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="icon-192.png">
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: -apple-system, "Microsoft JhengHei", "PingFang TC", sans-serif; background: #f5f5f5; padding: 10px; max-width: 700px; margin: 0 auto; -webkit-text-size-adjust: 100%; }
+h1 { font-size: 20px; text-align: center; margin-bottom: 12px; color: #333; }
+.section { background: #fff; border-radius: 12px; padding: 14px; margin-bottom: 10px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
+.section-title { font-size: 15px; font-weight: 700; color: #1a73e8; margin-bottom: 10px; border-bottom: 2px solid #e8f0fe; padding-bottom: 6px; }
+label { display: block; font-size: 14px; color: #555; margin-bottom: 4px; font-weight: 600; }
+select, input, textarea { width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 8px; font-size: 16px; margin-bottom: 10px; font-family: inherit; -webkit-appearance: none; }
+select { background: #fff; cursor: pointer; }
+textarea { resize: vertical; min-height: 60px; }
+.row { display: flex; gap: 8px; }
+.row > div { flex: 1; }
+.checkbox-group { display: flex; flex-direction: column; gap: 6px; }
+.checkbox-item { display: flex; align-items: center; padding: 10px; background: #f8f9fa; border-radius: 10px; cursor: pointer; transition: background 0.2s; border: 2px solid transparent; min-height: 44px; }
+.checkbox-item:active { background: #d2e3fc; }
+.checkbox-item.checked { background: #e8f0fe; border-color: #1a73e8; }
+.checkbox-item input[type="checkbox"] { width: 22px; height: 22px; margin-right: 10px; flex-shrink: 0; cursor: pointer; }
+.checkbox-item .item-name { flex: 1; font-size: 14px; line-height: 1.3; }
+.checkbox-item .item-price { font-weight: 700; color: #1a73e8; font-size: 14px; white-space: nowrap; margin-left: 6px; }
+.required-tag { background: #e53935; color: #fff; font-size: 10px; padding: 2px 6px; border-radius: 4px; margin-left: 4px; display: inline-block; }
+.total-bar { background: #1a73e8; color: #fff; padding: 14px 16px; border-radius: 12px; display: flex; justify-content: space-between; align-items: center; font-size: 18px; font-weight: 700; margin-bottom: 10px; position: sticky; top: 0; z-index: 10; }
+.fee-row { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; }
+.fee-row label { margin-bottom: 0; white-space: nowrap; min-width: 110px; font-size: 14px; }
+.fee-row input { margin-bottom: 0; flex: 1; }
+#preview { background: #fff; border-radius: 10px; padding: 14px; white-space: pre-wrap; font-size: 14px; line-height: 1.8; color: #333; border: 1px solid #ddd; min-height: 80px; word-break: break-word; }
+.btn { display: block; width: 100%; padding: 16px; border: none; border-radius: 12px; font-size: 16px; font-weight: 700; cursor: pointer; transition: all 0.2s; margin-bottom: 8px; min-height: 50px; -webkit-tap-highlight-color: transparent; }
+.btn-copy { background: #1a73e8; color: #fff; }
+.btn-copy:active { background: #1557b0; }
+.btn-copy.copied { background: #34a853; }
+.btn-generate { background: #fff; color: #1a73e8; border: 2px solid #1a73e8; }
+.btn-generate:active { background: #e8f0fe; }
+.note { font-size: 12px; color: #999; margin-top: 4px; }
+@media (max-width: 400px) {
+  .row { flex-direction: column; gap: 0; }
+  .fee-row { flex-direction: column; align-items: stretch; gap: 4px; }
+  .fee-row label { min-width: auto; }
+  .fee-row input { width: 100%; }
+}
+</style>
+</head>
+<body>
+<h1>手術說明表單</h1>
+
+<!-- Template Selection -->
+<div class="section">
+<div class="section-title">快速範本</div>
+<select id="template" onchange="loadTemplate()">
+<option value="">-- 選擇範本 --</option>
+<option value="0">鼻中膈+肥厚性鼻炎+鼻閥狹窄</option>
+<option value="1">鼻中膈+肥厚性鼻炎+鼻閥+鼻竇炎</option>
+<option value="2">鼻中膈+肥厚性鼻炎（基本）</option>
+<option value="3">肥厚性鼻炎+鼻涕倒流（雷射）</option>
+<option value="4">慢性鼻竇炎</option>
+<option value="5">睡眠呼吸中止症（懸雍垂+側咽）</option>
+<option value="6">睡眠呼吸中止症（懸雍垂）</option>
+<option value="7">慢性扁桃腺炎（左側）</option>
+<option value="8">慢性扁桃腺炎（右側）</option>
+<option value="9">慢性扁桃腺炎（雙側）</option>
+<option value="10">打呼／舌根肥大（舌根成形+懸吊）</option>
+<option value="11">黏膜下鼻甲成形+腺樣體切除（OSAS）</option>
+</select>
+</div>
+
+<!-- Diagnosis & Surgery -->
+<div class="section">
+<div class="section-title">診斷與手術</div>
+<label>診斷</label>
+<textarea id="diagnosis" rows="2"></textarea>
+<label>手術</label>
+<textarea id="surgery" rows="2"></textarea>
+<label>目的</label>
+<input type="text" id="purpose" placeholder="例: 控制感染（選填）">
+</div>
+
+<!-- Admission Info -->
+<div class="section">
+<div class="section-title">住院資訊</div>
+<div class="row">
+<div>
+<label>麻醉方式</label>
+<select id="anesthesia">
+<option value="健保全身麻醉">健保全身麻醉</option>
+<option value="全身麻醉">全身麻醉</option>
+</select>
+</div>
+<div>
+<label>住院天數</label>
+<select id="stayDays">
+<option value="兩天一夜至四天三夜">兩天一夜至四天三夜</option>
+<option value="三天兩夜">三天兩夜</option>
+<option value="四天三夜">四天三夜</option>
+</select>
+</div>
+</div>
+<div class="row">
+<div>
+<label>手術日期</label>
+<input type="text" id="surgeryDate" placeholder="例: 3/24" oninput="autoAdmitDate()">
+</div>
+<div>
+<label>住院日期（自動）</label>
+<input type="text" id="admitDate" placeholder="自動帶入前一天" readonly style="background:#f0f0f0;">
+</div>
+</div>
+<label>房型</label>
+<select id="roomType">
+<option value="單人">單人</option>
+<option value="雙人">雙人</option>
+<option value="健保床位">健保床位（免付差額）</option>
+</select>
+</div>
+
+<!-- Consumables -->
+<div class="section">
+<div class="section-title">自費耗材</div>
+<div class="checkbox-group" id="consumables"></div>
+</div>
+
+<!-- Fees -->
+<div class="section">
+<div class="section-title">其他費用</div>
+<div class="fee-row">
+<label>手術費</label>
+<input type="number" id="surgeryFee" value="0" step="1000" onchange="calcTotal()" oninput="calcTotal()">
+</div>
+<div class="fee-row">
+<label>麻醉科指定費</label>
+<input type="number" id="anesthesiaFee" value="10000" step="1000" onchange="calcTotal()" oninput="calcTotal()">
+</div>
+</div>
+
+<!-- Total -->
+<div class="total-bar">
+<span>自費總計</span>
+<span id="totalDisplay">$0</span>
+</div>
+
+<!-- Preview & Copy -->
+<div class="section">
+<div class="section-title">預覽</div>
+<div id="preview"></div>
+</div>
+<button class="btn btn-generate" onclick="generate()">產生預覽</button>
+<button class="btn btn-copy" id="copyBtn" onclick="copyText()">複製文字</button>
+
+<!-- Blog Link -->
+<div class="section" style="text-align:center; font-size:13px; color:#888;">
+<div>參考資料：Google > blogspot 施淳文 鼻中隔 下鼻甲</div>
+<a href="https://entdrshih.blogspot.com/2020/11/blog-post_13.html" target="_blank" style="color:#1a73e8;">施淳文醫師部落格</a>
+</div>
+
+<script>
+const CONSUMABLES = [
+  { id: 'c1',  name: '下鼻甲動力旋轉刀', price: 16200 },
+  { id: 'c2',  name: '鼻竇切割刀', price: 16200 },
+  { id: 'c2b', name: '鼻竇切割刀 x2', price: 32400 },
+  { id: 'c3',  name: '切割刀注水管', price: 1500 },
+  { id: 'c16', name: '百潔扁桃切割刀', price: 36450 },
+  { id: 'c17', name: '腺樣體切割刀', price: 16200 },
+  { id: 'c4',  name: '育禾修護凝膠', price: 36450, preselect: true },
+  { id: 'c5',  name: '星鏈止血劑', price: 54000, preselect: true },
+  { id: 'c6',  name: 'Arista 止血粉', price: 35925 },
+  { id: 'c7',  name: '奧斯坦止血劑 6ml', price: 36990 },
+  { id: 'c8',  name: '碩果骨力骨填補 1ml', price: 36450 },
+  { id: 'c9',  name: '骨扶挺 膠原蛋白填補骨', price: 51300 },
+  { id: 'c10', name: '塞納斯鼻部防沾黏凝膠', price: 17550 },
+  { id: 'c11', name: 'Hyfence 防沾黏凝膠 1.5ml', price: 40500 },
+  { id: 'c18', name: 'Hyfence 防沾黏凝膠 3ml', price: 64125 },
+  { id: 'c12', name: '雷射光纖', price: 59000 },
+  { id: 'c13', name: 'A29-2ZD 海昌膠原粉', price: 35100 },
+  { id: 'c14', name: 'A-45 美凱爾口腔潰瘍舒緩凝膠 15包', price: 7650 },
+  { id: 'c15', name: 'A-46 美凱爾口腔潰瘍舒緩凝膠 28包', price: 13500 },
+];
+
+const TEMPLATES = [
+  { // 0: 鼻中膈+肥厚+鼻閥
+    diagnosis: '鼻中膈彎曲，雙側肥厚性鼻炎，鼻閥狹窄',
+    surgery: '雙側鼻中膈鼻道成形手術 鼻閥成形手術',
+    anesthesia: '健保全身麻醉', stayDays: '兩天一夜至四天三夜',
+    items: ['c1','c4','c5'],
+    surgeryFee: 0, anesthesiaFee: 10000,
+    blogLink: 'https://entdrshih.blogspot.com/2020/11/blog-post_13.html',
+    blogSearch: 'Google > blogspot 施淳文 鼻中隔 下鼻甲'
+  },
+  { // 1: +鼻竇炎
+    diagnosis: '鼻中隔彎曲，慢性肥厚性鼻炎，鼻閥狹窄，雙側慢性鼻竇炎',
+    surgery: '雙側鼻中隔鼻道成形手術 鼻閥成形手術 雙側功能性鼻竇內視鏡手術',
+    anesthesia: '健保全身麻醉', stayDays: '兩天一夜至四天三夜',
+    items: ['c1','c2','c4','c5','c9'],
+    surgeryFee: 35000, anesthesiaFee: 10000,
+    blogLink: 'https://entdrshih.blogspot.com/2020/11/blog-post_13.html',
+    blogSearch: 'Google > blogspot 施淳文 鼻中隔 下鼻甲'
+  },
+  { // 2: 基本鼻中膈+肥厚
+    diagnosis: '鼻中膈彎曲，雙側肥厚性鼻炎',
+    surgery: '雙側鼻中膈鼻道成形手術',
+    anesthesia: '健保全身麻醉', stayDays: '兩天一夜至四天三夜',
+    items: ['c1','c4','c5','c10'],
+    surgeryFee: 15000, anesthesiaFee: 10000,
+    blogLink: 'https://entdrshih.blogspot.com/2020/11/blog-post_13.html',
+    blogSearch: 'Google > blogspot 施淳文 鼻中隔 下鼻甲'
+  },
+  { // 3: 肥厚+鼻涕倒流 雷射
+    diagnosis: '雙側肥厚性鼻炎，鼻涕倒流',
+    surgery: '雙側鼻道成形手術 雷射後鼻神經燒灼手術',
+    anesthesia: '健保全身麻醉', stayDays: '兩天一夜至四天三夜',
+    items: ['c12','c4','c5'],
+    surgeryFee: 40000, anesthesiaFee: 10000,
+    blogLink: 'https://entdrshih.blogspot.com/2020/11/blog-post_13.html',
+    blogSearch: 'Google > blogspot 施淳文 鼻中隔 下鼻甲'
+  },
+  { // 4: 慢性鼻竇炎
+    diagnosis: '雙側慢性鼻竇炎',
+    surgery: '雙側多副鼻竇切除手術',
+    anesthesia: '健保全身麻醉', stayDays: '兩天一夜至四天三夜',
+    items: ['c2b','c3','c4','c5','c10'],
+    surgeryFee: 0, anesthesiaFee: 10000,
+    blogLink: 'https://entdrshih.blogspot.com/2020/11/blog-post_13.html',
+    blogSearch: 'Google > blogspot 施淳文 鼻中隔 下鼻甲'
+  },
+  { // 5: 睡眠呼吸中止（懸雍垂+側咽）
+    diagnosis: '阻塞睡眠呼吸中止症',
+    surgery: '懸雍垂成形手術 側咽成形手術',
+    anesthesia: '全身麻醉', stayDays: '三天兩夜',
+    items: ['c12','c7','c4','c15'],
+    surgeryFee: 20000, anesthesiaFee: 10000,
+    blogLink: 'https://entdrshih.blogspot.com/2023/07/blog-post.html',
+    blogSearch: 'Google > blogspot 施淳文 睡眠呼吸中止症'
+  },
+  { // 6: 睡眠呼吸中止（懸雍垂）
+    diagnosis: '阻塞睡眠呼吸中止症',
+    surgery: '懸雍垂成形手術',
+    anesthesia: '全身麻醉', stayDays: '三天兩夜',
+    items: ['c12','c5','c4','c10','c15'],
+    surgeryFee: 10000, anesthesiaFee: 10000,
+    blogLink: 'https://entdrshih.blogspot.com/2023/07/blog-post.html',
+    blogSearch: 'Google > blogspot 施淳文 睡眠呼吸中止症'
+  },
+  { // 7: 慢性扁桃腺炎（左側）
+    diagnosis: '左側慢性扁桃腺炎',
+    surgery: '左側扁桃腺切除手術',
+    purpose: '控制感染',
+    anesthesia: '全身麻醉', stayDays: '三天兩夜',
+    items: ['c16','c5','c4','c10','c15'],
+    surgeryFee: 0, anesthesiaFee: 10000,
+    blogLink: '', blogSearch: ''
+  },
+  { // 8: 慢性扁桃腺炎（右側）
+    diagnosis: '右側慢性扁桃腺炎',
+    surgery: '右側扁桃腺切除手術',
+    purpose: '控制感染',
+    anesthesia: '全身麻醉', stayDays: '三天兩夜',
+    items: ['c16','c5','c4','c10','c15'],
+    surgeryFee: 0, anesthesiaFee: 10000,
+    blogLink: '', blogSearch: ''
+  },
+  { // 9: 慢性扁桃腺炎（雙側）
+    diagnosis: '雙側慢性扁桃腺炎',
+    surgery: '雙側扁桃腺切除手術',
+    purpose: '控制感染',
+    anesthesia: '全身麻醉', stayDays: '三天兩夜',
+    items: ['c16','c5','c4','c10','c15'],
+    surgeryFee: 0, anesthesiaFee: 10000,
+    blogLink: '', blogSearch: ''
+  },
+  { // 10: 打呼／舌根肥大（舌根成形+懸吊）
+    diagnosis: '打呼，舌根肥大',
+    surgery: '舌根成形手術 舌根懸吊手術',
+    anesthesia: '全身麻醉', stayDays: '四天三夜',
+    surgeryDate: '115/6/2',
+    items: ['c4','c5','c12','c15'],
+    surgeryFee: 30000, anesthesiaFee: 10000,
+    blogLink: 'https://entdrshih.blogspot.com/2023/07/blog-post.html',
+    blogSearch: 'Google > blogspot 施淳文 睡眠呼吸中止症'
+  },
+  { // 11: 黏膜下鼻甲成形+腺樣體切除（鼻甲+OSAS）
+    diagnosis: '雙側肥厚性鼻炎，阻塞睡眠呼吸中止症',
+    surgery: '雙側黏膜下鼻甲成形手術 腺樣體切除手術',
+    anesthesia: '全身麻醉', stayDays: '兩天一夜至四天三夜',
+    roomType: '單人',
+    items: ['c1','c4','c5','c17'],
+    surgeryFee: 60000, anesthesiaFee: 10000,
+    blogLink: 'https://entdrshih.blogspot.com/2020/11/blog-post_13.html',
+    blogSearch: 'Google > blogspot 施淳文 鼻中隔 下鼻甲'
+  },
+];
+
+const DEFAULT_ROC_YEAR = 115;
+
+function parseSurgeryDate(val) {
+  // 115/3/24
+  let m3 = val.match(/^(\d+)\/(\d+)\/(\d+)$/);
+  if (m3) return { y: parseInt(m3[1]), m: parseInt(m3[2]), d: parseInt(m3[3]) };
+  // 3/24
+  let m2 = val.match(/^(\d+)\/(\d+)$/);
+  if (m2) return { y: DEFAULT_ROC_YEAR, m: parseInt(m2[1]), d: parseInt(m2[2]) };
+  // 1150324 (7碼: 3年1月2日) or 11504 (5碼: 3年+月日各1-2碼不好判斷，用固定切法)
+  // 7碼: YYY MM DD
+  let m7 = val.match(/^(\d{3})(\d{2})(\d{2})$/);
+  if (m7) return { y: parseInt(m7[1]), m: parseInt(m7[2]), d: parseInt(m7[3]) };
+  // 6碼: YYY M DD 或 YYY MM D
+  let m6 = val.match(/^(\d{3})(\d{1})(\d{2})$/);
+  if (m6 && parseInt(m6[2]) >= 1 && parseInt(m6[2]) <= 9) return { y: parseInt(m6[1]), m: parseInt(m6[2]), d: parseInt(m6[3]) };
+  // 4碼無年: MMDD
+  let m4 = val.match(/^(\d{2})(\d{2})$/);
+  if (m4) return { y: DEFAULT_ROC_YEAR, m: parseInt(m4[1]), d: parseInt(m4[2]) };
+  // 3碼無年: MDD
+  let m3b = val.match(/^(\d{1})(\d{2})$/);
+  if (m3b) return { y: DEFAULT_ROC_YEAR, m: parseInt(m3b[1]), d: parseInt(m3b[2]) };
+  return null;
+}
+
+function autoAdmitDate() {
+  const val = document.getElementById('surgeryDate').value.trim();
+  const parsed = parseSurgeryDate(val);
+  if (!parsed) { document.getElementById('admitDate').value = ''; return; }
+  let { y, m, d } = parsed;
+  const date = new Date(y + 1911, m - 1, d);
+  date.setDate(date.getDate() - 1);
+  const ry = date.getFullYear() - 1911;
+  document.getElementById('admitDate').value = `${ry}/${date.getMonth() + 1}/${date.getDate()}`;
+}
+
+function renderConsumables() {
+  const container = document.getElementById('consumables');
+  container.innerHTML = '';
+  CONSUMABLES.forEach(item => {
+    const div = document.createElement('div');
+    div.className = 'checkbox-item' + (item.preselect ? ' checked' : '');
+    const noteTag = item.note ? `<span class="required-tag">${item.note}</span>` : '';
+    div.innerHTML = `
+      <input type="checkbox" id="${item.id}" ${item.preselect ? 'checked' : ''} onchange="toggleItem(this)">
+      <span class="item-name">${item.name}${noteTag}</span>
+      <span class="item-price">$${item.price.toLocaleString()}</span>
+    `;
+    div.onclick = function(e) {
+      if (e.target.tagName === 'INPUT') return;
+      const cb = div.querySelector('input');
+      cb.checked = !cb.checked;
+      toggleItem(cb);
+    };
+    container.appendChild(div);
+  });
+  calcTotal();
+}
+
+function toggleItem(cb) {
+  const item = cb.closest('.checkbox-item');
+  if (cb.checked) item.classList.add('checked');
+  else item.classList.remove('checked');
+  calcTotal();
+}
+
+function calcTotal() {
+  let total = 0;
+  CONSUMABLES.forEach(item => {
+    const cb = document.getElementById(item.id);
+    if (cb && cb.checked) total += item.price;
+  });
+  total += parseInt(document.getElementById('surgeryFee').value) || 0;
+  total += parseInt(document.getElementById('anesthesiaFee').value) || 0;
+  document.getElementById('totalDisplay').textContent = '$' + total.toLocaleString();
+}
+
+function loadTemplate() {
+  const idx = document.getElementById('template').value;
+  if (idx === '') return;
+  const t = TEMPLATES[idx];
+  document.getElementById('diagnosis').value = t.diagnosis;
+  document.getElementById('surgery').value = t.surgery;
+  document.getElementById('purpose').value = t.purpose || '';
+  document.getElementById('anesthesia').value = t.anesthesia;
+  document.getElementById('stayDays').value = t.stayDays;
+  document.getElementById('surgeryFee').value = t.surgeryFee;
+  document.getElementById('anesthesiaFee').value = t.anesthesiaFee;
+  document.getElementById('surgeryDate').value = t.surgeryDate || '';
+  autoAdmitDate();
+  if (t.roomType) document.getElementById('roomType').value = t.roomType;
+
+  // Reset all checkboxes then set template items
+  CONSUMABLES.forEach(item => {
+    const cb = document.getElementById(item.id);
+    if (cb) {
+      cb.checked = t.items.includes(item.id);
+      const div = cb.closest('.checkbox-item');
+      if (cb.checked) div.classList.add('checked');
+      else div.classList.remove('checked');
+    }
+  });
+  calcTotal();
+  generate();
+}
+
+function generate() {
+  const diagnosis = document.getElementById('diagnosis').value.trim();
+  const surgery = document.getElementById('surgery').value.trim();
+  const anesthesia = document.getElementById('anesthesia').value;
+  const stayDays = document.getElementById('stayDays').value;
+  const admitDate = document.getElementById('admitDate').value.trim();
+  const surgeryDateRaw = document.getElementById('surgeryDate').value.trim();
+  const parsedDate = parseSurgeryDate(surgeryDateRaw);
+  const surgeryDate = parsedDate ? `${parsedDate.y}/${parsedDate.m}/${parsedDate.d}` : surgeryDateRaw;
+  const roomType = document.getElementById('roomType').value;
+  const surgeryFee = parseInt(document.getElementById('surgeryFee').value) || 0;
+  const anesthesiaFee = parseInt(document.getElementById('anesthesiaFee').value) || 0;
+
+  let lines = [];
+  const purpose = document.getElementById('purpose').value.trim();
+  lines.push(`診斷：${diagnosis}`);
+  lines.push(`手術：${surgery}`);
+  if (purpose) lines.push(`目的：${purpose}`);
+  lines.push('');
+  lines.push(`${anesthesia}`);
+  lines.push(`住院天數：${stayDays}`);
+  if (admitDate) lines.push(`住院日期：${admitDate}`);
+  if (surgeryDate) lines.push(`手術日期：${surgeryDate}`);
+  lines.push(`房型：${roomType}`);
+  lines.push('');
+
+  // Consumables
+  let selectedItems = [];
+  let itemTotal = 0;
+  CONSUMABLES.forEach(item => {
+    const cb = document.getElementById(item.id);
+    if (cb && cb.checked) {
+      selectedItems.push(item);
+      itemTotal += item.price;
+    }
+  });
+
+  lines.push('自費耗材：');
+  selectedItems.forEach((item, i) => {
+    const prefix = item.note ? `*${item.note}* ` : '';
+    lines.push(`${i + 1}. ${prefix}${item.name}　$${item.price.toLocaleString()}`);
+  });
+
+  if (selectedItems.length > 0) {
+    lines.push(`耗材小計：$${itemTotal.toLocaleString()}`);
+  }
+
+  if (surgeryFee > 0) lines.push(`手術費：$${surgeryFee.toLocaleString()}`);
+  if (anesthesiaFee > 0) lines.push(`麻醉科指定費：$${anesthesiaFee.toLocaleString()}`);
+
+  let grandTotal = itemTotal + surgeryFee + anesthesiaFee;
+  lines.push('');
+  lines.push(`自費總計：$${grandTotal.toLocaleString()}`);
+  lines.push('');
+  lines.push('術後每週回診一次，需三到四週');
+
+  // Get blog info from current template
+  const tidx = document.getElementById('template').value;
+  if (tidx !== '') {
+    const t = TEMPLATES[tidx];
+    if (t.blogSearch || t.blogLink) {
+      lines.push('');
+      if (t.blogSearch) lines.push(t.blogSearch);
+      if (t.blogLink) lines.push(t.blogLink);
+    }
+  }
+
+  document.getElementById('preview').textContent = lines.join('\n');
+}
+
+function copyText() {
+  const text = document.getElementById('preview').textContent;
+  if (!text) { generate(); }
+  const finalText = document.getElementById('preview').textContent;
+  navigator.clipboard.writeText(finalText).then(() => {
+    const btn = document.getElementById('copyBtn');
+    btn.textContent = '已複製！';
+    btn.classList.add('copied');
+    setTimeout(() => {
+      btn.textContent = '複製文字';
+      btn.classList.remove('copied');
+    }, 2000);
+  });
+}
+
+// Init
+renderConsumables();
+
+// PWA service worker (offline support)
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', function () {
+    navigator.serviceWorker.register('sw.js').catch(function () {});
+  });
+}
+</script>
+</body>
+</html>
