@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>宏恩手術說明表單</title>
+<meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" content="#0f7b6c">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="宏恩手術說明">
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="icon-192.png">
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: -apple-system, "Microsoft JhengHei", "PingFang TC", sans-serif; background: #f5f5f5; padding: 10px; max-width: 700px; margin: 0 auto; -webkit-text-size-adjust: 100%; }
+h1 { font-size: 20px; text-align: center; margin-bottom: 12px; color: #333; }
+.section { background: #fff; border-radius: 12px; padding: 14px; margin-bottom: 10px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
+.section-title { font-size: 15px; font-weight: 700; color: #0f7b6c; margin-bottom: 10px; border-bottom: 2px solid #e3f4f1; padding-bottom: 6px; }
+label { display: block; font-size: 14px; color: #555; margin-bottom: 4px; font-weight: 600; }
+select, input, textarea { width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 8px; font-size: 16px; margin-bottom: 10px; font-family: inherit; -webkit-appearance: none; }
+select { background: #fff; cursor: pointer; }
+textarea { resize: vertical; min-height: 60px; }
+.row { display: flex; gap: 8px; }
+.row > div { flex: 1; }
+.checkbox-group { display: flex; flex-direction: column; gap: 6px; }
+.cat-head { font-size: 13px; font-weight: 700; color: #0f7b6c; background: #e3f4f1; padding: 6px 10px; border-radius: 6px; margin: 8px 0 2px; }
+.cat-head:first-child { margin-top: 0; }
+.checkbox-item { display: flex; align-items: center; padding: 10px; background: #f8f9fa; border-radius: 10px; cursor: pointer; transition: background 0.2s; border: 2px solid transparent; min-height: 44px; }
+.checkbox-item:active { background: #cdeee8; }
+.checkbox-item.checked { background: #e3f4f1; border-color: #0f7b6c; }
+.checkbox-item input[type="checkbox"] { width: 22px; height: 22px; margin-right: 10px; flex-shrink: 0; cursor: pointer; }
+.checkbox-item .item-name { flex: 1; font-size: 14px; line-height: 1.3; }
+.checkbox-item .item-price { font-weight: 700; color: #0f7b6c; font-size: 14px; white-space: nowrap; margin-left: 6px; }
+.required-tag { background: #e67e22; color: #fff; font-size: 10px; padding: 2px 6px; border-radius: 4px; margin-left: 4px; display: inline-block; }
+.total-bar { background: #0f7b6c; color: #fff; padding: 14px 16px; border-radius: 12px; display: flex; justify-content: space-between; align-items: center; font-size: 18px; font-weight: 700; margin-bottom: 10px; position: sticky; top: 0; z-index: 10; }
+.fee-row { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; }
+.fee-row label { margin-bottom: 0; white-space: nowrap; min-width: 130px; font-size: 14px; }
+.fee-row input { margin-bottom: 0; flex: 1; }
+.toggle-line { display: flex; align-items: center; gap: 8px; padding: 6px 0; }
+.toggle-line input { width: 22px; height: 22px; margin: 0; }
+.toggle-line label { margin: 0; }
+#preview { background: #fff; border-radius: 10px; padding: 14px; white-space: pre-wrap; font-size: 14px; line-height: 1.8; color: #333; border: 1px solid #ddd; min-height: 80px; word-break: break-word; }
+.btn { display: block; width: 100%; padding: 16px; border: none; border-radius: 12px; font-size: 16px; font-weight: 700; cursor: pointer; transition: all 0.2s; margin-bottom: 8px; min-height: 50px; -webkit-tap-highlight-color: transparent; }
+.btn-copy { background: #0f7b6c; color: #fff; }
+.btn-copy:active { background: #0a5c50; }
+.btn-copy.copied { background: #34a853; }
+.btn-generate { background: #fff; color: #0f7b6c; border: 2px solid #0f7b6c; }
+.btn-generate:active { background: #e3f4f1; }
+.note { font-size: 12px; color: #999; margin-top: 4px; }
+.bed-note { font-size: 12px; color: #777; line-height: 1.7; background: #fafafa; padding: 8px 10px; border-radius: 8px; }
+@media (max-width: 400px) {
+  .row { flex-direction: column; gap: 0; }
+  .fee-row { flex-direction: column; align-items: stretch; gap: 4px; }
+  .fee-row label { min-width: auto; }
+  .fee-row input { width: 100%; }
+}
+</style>
+</head>
+<body>
+<h1>宏恩綜合醫院　手術自費表單</h1>
+
+<!-- Patient Info -->
+<div class="section">
+<div class="section-title">病患資料（選填）</div>
+<div class="row">
+<div><label>姓名</label><input type="text" id="pName"></div>
+<div><label>身份證字號</label><input type="text" id="pId"></div>
+</div>
+<div class="row">
+<div><label>生日</label><input type="text" id="pBirth" placeholder="例: 70/3/24"></div>
+<div><label>電話</label><input type="text" id="pPhone"></div>
+</div>
+<label>地址</label>
+<input type="text" id="pAddr">
+</div>
+
+<!-- Diagnosis & Surgery -->
+<div class="section">
+<div class="section-title">診斷與手術</div>
+<label>診斷</label>
+<textarea id="diagnosis" rows="2">阻塞性睡眠呼吸中止症</textarea>
+<label>手術</label>
+<textarea id="surgery" rows="2">懸雍垂顎咽成形手術</textarea>
+<label>目的</label>
+<input type="text" id="purpose" value="改善呼吸" placeholder="選填">
+</div>
+
+<!-- Admission Info -->
+<div class="section">
+<div class="section-title">住院資訊</div>
+<div class="row">
+<div>
+<label>麻醉方式</label>
+<select id="anesthesia">
+<option value="全身麻醉">全身麻醉</option>
+<option value="健保全身麻醉">健保全身麻醉</option>
+</select>
+</div>
+<div>
+<label>住院天數</label>
+<select id="stayDays">
+<option value="四天三夜">四天三夜</option>
+<option value="三天兩夜">三天兩夜</option>
+<option value="兩天一夜至四天三夜">兩天一夜至四天三夜</option>
+</select>
+</div>
+</div>
+<div class="row">
+<div>
+<label>手術日期</label>
+<input type="text" id="surgeryDate" placeholder="例: 3/24" oninput="autoAdmitDate()">
+</div>
+<div>
+<label>住院日期（自動）</label>
+<input type="text" id="admitDate" placeholder="自動帶入前一天" readonly style="background:#f0f0f0;">
+</div>
+</div>
+<label>房型</label>
+<select id="roomType" onchange="calcTotal()">
+<option value="健保床位（1/2/3人）免付差額|0">健保床位（1/2/3人）免付差額</option>
+<option value="雙人房 $2,700/晚|2700">雙人房 $2,700/晚（院內 2 床）</option>
+<option value="單人房 $3,700/晚|3700" selected>單人房 $3,700/晚（院內 2 床）</option>
+<option value="單人房 $4,250/晚|4250">單人房 $4,250/晚（院內 14 床）</option>
+<option value="一房一廳 $6,030/晚|6030">一房一廳 $6,030/晚（院內 1 床）</option>
+</select>
+<div class="bed-note">
+床位差額／天（健保床位免付差額）：<br>
+雙人房 $2,700（2 床）｜單人房 $3,700（2 床）／$4,250（14 床）｜一房一廳 $6,030（1 床）
+</div>
+</div>
+
+<!-- Consumables -->
+<div class="section">
+<div class="section-title">自費耗材</div>
+<div class="checkbox-group" id="consumables"></div>
+</div>
+
+<!-- Other Fees -->
+<div class="section">
+<div class="section-title">其他費用</div>
+<div class="fee-row">
+<label>單人房／雜費（約）</label>
+<input type="number" id="miscFee" value="20000" step="1000" onchange="calcTotal()" oninput="calcTotal()">
+</div>
+<div class="note">含單人房住院差額與雜支，依房型與天數調整（約值）。</div>
+<div class="toggle-line">
+<input type="checkbox" id="endoNote" onchange="generate()">
+<label for="endoNote">附「術前睡眠內視鏡檢查」衛教說明</label>
+</div>
+</div>
+
+<!-- Total -->
+<div class="total-bar">
+<span>自費總計</span>
+<span id="totalDisplay">$0</span>
+</div>
+
+<!-- Preview & Copy -->
+<div class="section">
+<div class="section-title">預覽</div>
+<div id="preview"></div>
+</div>
+<button class="btn btn-generate" onclick="generate()">產生預覽</button>
+<button class="btn btn-copy" id="copyBtn" onclick="copyText()">複製文字</button>
+
+<script>
+// 宏恩綜合醫院耗材價目（含品項代碼）。cat = 分類標題列（無 id），其餘為可勾選品項。
+const CONSUMABLES = [
+  { cat: '下鼻甲' },
+  { id: 'h283',     name: 'H283 下鼻甲動力旋轉刀', price: 15600 },
+  { cat: '黏膜修復 / 傷口敷料' },
+  { id: 'or272',    name: 'OR272 膠原粉（黏膜修復）', price: 28500 },
+  { id: 'or272x2',  name: 'OR272 膠原粉 x2', price: 57000 },
+  { id: 'hemed',    name: '和醫傷口敷料', price: 12000 },
+  { id: 'hemedx2',  name: '和醫傷口敷料 x2', price: 24000, preselect: true },
+  { cat: '止血劑（擇一）' },
+  { id: 'star',     name: '星鏈止血粉', price: 54000, preselect: true },
+  { id: 'or262',    name: 'OR262 奧斯坦可吸收氧化纖維止血劑 6ML', price: 37383 },
+  { id: 'or262x2',  name: 'OR262 奧斯坦止血劑 x2', price: 74766 },
+  { id: 'arista',   name: 'OR269+OR271 Arista 止血粉', price: 38000 },
+  { id: 'aristax2', name: 'Arista 止血粉 x2', price: 76000 },
+  { id: 'or277',    name: 'OR277 Spongostan 斯龐嘉止血粉', price: 15000 },
+  { id: 'or277x2',  name: 'Spongostan 斯龐嘉止血粉 x2', price: 30000 },
+  { cat: '防沾黏' },
+  { id: 'h264',     name: 'H264 Hyfence 防沾黏凝膠 1.5ml', price: 38976 },
+  { id: 'sinas',    name: '塞納斯鼻腔阻隔物 透明質酸鈉凝膠', price: 17000 },
+  { id: 'sinasx2',  name: '塞納斯鼻腔阻隔物 x2', price: 34000 },
+  { cat: '切割／燒灼器械（擇一）' },
+  { id: 'h291',     name: 'H291 賽瑞歐特催斯特 雷射光纖', price: 58000 },
+  { id: 'or265',    name: 'OR265 電漿刀', price: 18750 },
+  { id: 'h295',     name: 'H295 百潔扁桃切割刀', price: 36000 },
+  { id: 'h293',     name: 'H293 鼻竇切割刀（12/40/60度）', price: 12000 },
+  { id: 'h293x3',   name: 'H293 鼻竇切割刀 x3', price: 36000 },
+  { cat: '生物可吸收骨' },
+  { id: 'or263',    name: 'OR263 生物可吸收骨 1CC', price: 40825 },
+  { cat: '口腔止痛' },
+  { id: 'mekal',    name: '美凱爾口腔止痛凝膠', price: 13500 },
+  { cat: '睡眠內視鏡檢查（選配）' },
+  { id: 'endoTech', name: '睡眠內視鏡技術費', price: 20000 },
+  { id: 'endoAnes', name: '睡眠內視鏡麻醉費', price: 10000 },
+];
+
+const ENDO_NOTE = '【術前睡眠內視鏡檢查（選配）】\n' +
+  '可於術前做睡眠內視鏡檢查確定阻塞位置：技術費 $20,000、麻醉費 $10,000。\n' +
+  '如同胃鏡舒眠麻醉，模擬睡眠狀態同時內視鏡檢查並錄影咽喉阻塞位置。可先門診檢查後回診討論，或安排住院當天中午檢查、隔天手術（此檢查以麻醉費＋技術費計）。\n' +
+  '就咽喉手術而言非必須；您已確診睡眠呼吸中止症，此檢查僅為更確定打呼阻塞位置。';
+
+const HOSPITAL_FOOTER = '宏恩綜合醫院\n' +
+  '台北市大安區仁愛路四段61號\n' +
+  '住院請於一樓治療區報到\n' +
+  '住院組電話 02-2771-3161 轉 168\n' +
+  '辦理住院時間：上午 12 時至下午 7 時前';
+
+const DEFAULT_ROC_YEAR = 115;
+
+function parseSurgeryDate(val) {
+  let m3 = val.match(/^(\d+)\/(\d+)\/(\d+)$/);
+  if (m3) return { y: parseInt(m3[1]), m: parseInt(m3[2]), d: parseInt(m3[3]) };
+  let m2 = val.match(/^(\d+)\/(\d+)$/);
+  if (m2) return { y: DEFAULT_ROC_YEAR, m: parseInt(m2[1]), d: parseInt(m2[2]) };
+  let m7 = val.match(/^(\d{3})(\d{2})(\d{2})$/);
+  if (m7) return { y: parseInt(m7[1]), m: parseInt(m7[2]), d: parseInt(m7[3]) };
+  let m6 = val.match(/^(\d{3})(\d{1})(\d{2})$/);
+  if (m6 && parseInt(m6[2]) >= 1 && parseInt(m6[2]) <= 9) return { y: parseInt(m6[1]), m: parseInt(m6[2]), d: parseInt(m6[3]) };
+  let m4 = val.match(/^(\d{2})(\d{2})$/);
+  if (m4) return { y: DEFAULT_ROC_YEAR, m: parseInt(m4[1]), d: parseInt(m4[2]) };
+  let m3b = val.match(/^(\d{1})(\d{2})$/);
+  if (m3b) return { y: DEFAULT_ROC_YEAR, m: parseInt(m3b[1]), d: parseInt(m3b[2]) };
+  return null;
+}
+
+function autoAdmitDate() {
+  const val = document.getElementById('surgeryDate').value.trim();
+  const parsed = parseSurgeryDate(val);
+  if (!parsed) { document.getElementById('admitDate').value = ''; return; }
+  let { y, m, d } = parsed;
+  const date = new Date(y + 1911, m - 1, d);
+  date.setDate(date.getDate() - 1);
+  const ry = date.getFullYear() - 1911;
+  document.getElementById('admitDate').value = `${ry}/${date.getMonth() + 1}/${date.getDate()}`;
+}
+
+function renderConsumables() {
+  const container = document.getElementById('consumables');
+  container.innerHTML = '';
+  CONSUMABLES.forEach(item => {
+    if (item.cat) {
+      const h = document.createElement('div');
+      h.className = 'cat-head';
+      h.textContent = item.cat;
+      container.appendChild(h);
+      return;
+    }
+    const div = document.createElement('div');
+    div.className = 'checkbox-item' + (item.preselect ? ' checked' : '');
+    div.innerHTML = `
+      <input type="checkbox" id="${item.id}" ${item.preselect ? 'checked' : ''} onchange="toggleItem(this)">
+      <span class="item-name">${item.name}</span>
+      <span class="item-price">$${item.price.toLocaleString()}</span>
+    `;
+    div.onclick = function(e) {
+      if (e.target.tagName === 'INPUT') return;
+      const cb = div.querySelector('input');
+      cb.checked = !cb.checked;
+      toggleItem(cb);
+    };
+    container.appendChild(div);
+  });
+  calcTotal();
+}
+
+function toggleItem(cb) {
+  const item = cb.closest('.checkbox-item');
+  if (cb.checked) item.classList.add('checked');
+  else item.classList.remove('checked');
+  calcTotal();
+}
+
+function roomFee() {
+  const raw = document.getElementById('roomType').value;
+  const parts = raw.split('|');
+  return parseInt(parts[1]) || 0;
+}
+
+function calcTotal() {
+  let total = 0;
+  CONSUMABLES.forEach(item => {
+    if (!item.id) return;
+    const cb = document.getElementById(item.id);
+    if (cb && cb.checked) total += item.price;
+  });
+  total += parseInt(document.getElementById('miscFee').value) || 0;
+  document.getElementById('totalDisplay').textContent = '$' + total.toLocaleString();
+}
+
+function generate() {
+  const diagnosis = document.getElementById('diagnosis').value.trim();
+  const surgery = document.getElementById('surgery').value.trim();
+  const purpose = document.getElementById('purpose').value.trim();
+  const anesthesia = document.getElementById('anesthesia').value;
+  const stayDays = document.getElementById('stayDays').value;
+  const admitDate = document.getElementById('admitDate').value.trim();
+  const surgeryDateRaw = document.getElementById('surgeryDate').value.trim();
+  const parsedDate = parseSurgeryDate(surgeryDateRaw);
+  const surgeryDate = parsedDate ? `${parsedDate.y}/${parsedDate.m}/${parsedDate.d}` : surgeryDateRaw;
+  const roomLabel = document.getElementById('roomType').value.split('|')[0];
+  const miscFee = parseInt(document.getElementById('miscFee').value) || 0;
+
+  let lines = [];
+  lines.push('宏恩綜合醫院　手術自費說明');
+  lines.push('');
+
+  // Patient info (only filled)
+  const pName = document.getElementById('pName').value.trim();
+  const pId = document.getElementById('pId').value.trim();
+  const pBirth = document.getElementById('pBirth').value.trim();
+  const pPhone = document.getElementById('pPhone').value.trim();
+  const pAddr = document.getElementById('pAddr').value.trim();
+  let hasPatient = false;
+  if (pName)  { lines.push(`姓名：${pName}`); hasPatient = true; }
+  if (pId)    { lines.push(`身份證字號：${pId}`); hasPatient = true; }
+  if (pBirth) { lines.push(`生日：${pBirth}`); hasPatient = true; }
+  if (pPhone) { lines.push(`電話：${pPhone}`); hasPatient = true; }
+  if (pAddr)  { lines.push(`地址：${pAddr}`); hasPatient = true; }
+  if (hasPatient) lines.push('');
+
+  lines.push(`診斷：${diagnosis}`);
+  lines.push(`手術：${surgery}`);
+  if (purpose) lines.push(`目的：${purpose}`);
+  lines.push('');
+  lines.push(`${anesthesia}`);
+  lines.push(`住院天數：${stayDays}`);
+  if (admitDate) lines.push(`住院日期：${admitDate}`);
+  if (surgeryDate) lines.push(`手術日期：${surgeryDate}`);
+  lines.push(`房型：${roomLabel}`);
+  lines.push('');
+
+  // Consumables
+  let selectedItems = [];
+  let itemTotal = 0;
+  CONSUMABLES.forEach(item => {
+    if (!item.id) return;
+    const cb = document.getElementById(item.id);
+    if (cb && cb.checked) {
+      selectedItems.push(item);
+      itemTotal += item.price;
+    }
+  });
+
+  lines.push('自費耗材：');
+  selectedItems.forEach((item, i) => {
+    lines.push(`${i + 1}. ${item.name}　$${item.price.toLocaleString()}`);
+  });
+  if (selectedItems.length > 0) lines.push(`耗材小計：$${itemTotal.toLocaleString()}`);
+
+  if (miscFee > 0) lines.push(`單人房／雜費（約）：$${miscFee.toLocaleString()}`);
+
+  let grandTotal = itemTotal + miscFee;
+  lines.push('');
+  lines.push(`自費總計（約）：$${grandTotal.toLocaleString()}`);
+  lines.push('');
+  lines.push('術後每週回診一次，需三到四週');
+
+  if (document.getElementById('endoNote').checked) {
+    lines.push('');
+    lines.push(ENDO_NOTE);
+  }
+
+  lines.push('');
+  lines.push('────────────');
+  lines.push(HOSPITAL_FOOTER);
+
+  document.getElementById('preview').textContent = lines.join('\n');
+}
+
+function copyText() {
+  if (!document.getElementById('preview').textContent) generate();
+  const finalText = document.getElementById('preview').textContent;
+  navigator.clipboard.writeText(finalText).then(() => {
+    const btn = document.getElementById('copyBtn');
+    btn.textContent = '已複製！';
+    btn.classList.add('copied');
+    setTimeout(() => {
+      btn.textContent = '複製文字';
+      btn.classList.remove('copied');
+    }, 2000);
+  });
+}
+
+// Init
+renderConsumables();
+generate();
+
+// PWA service worker (offline support)
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', function () {
+    navigator.serviceWorker.register('sw.js').catch(function () {});
+  });
+}
+</script>
+</body>
+</html>
