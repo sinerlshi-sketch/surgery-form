@@ -79,6 +79,7 @@ textarea { resize: vertical; min-height: 60px; }
 <option value="10">打呼／舌根肥大（舌根成形+懸吊）</option>
 <option value="11">黏膜下鼻甲成形+腺樣體切除（OSAS）</option>
 <option value="12">兒童睡眠呼吸中止症（扁桃腺+腺樣體+下鼻甲）</option>
+<option value="13">睡眠呼吸中止症（會厭軟骨成形+側咽成形）</option>
 </select>
 <div class="note">耗材已對應宏恩品項，僅為起點；器械／止血劑請依實際刀法調整。</div>
 </div>
@@ -291,6 +292,11 @@ const TEMPLATES = [
     surgery: '扁桃腺切除手術 腺樣體切除手術 下鼻甲切除手術',
     anesthesia: '全身麻醉', stayDays: '三天兩夜',
     items: ['h295', 'h283', 'star', 'hemedx2', 'mekal'] },
+  { // 13 睡眠呼吸中止症（會厭軟骨成形+側咽成形）
+    diagnosis: '睡眠呼吸中止症',
+    surgery: '會厭軟骨成形手術 側咽成形手術',
+    anesthesia: '全身麻醉', stayDays: '三天兩夜',
+    items: ['h291', 'star', 'hemedx2', 'mekal', 'endoTech', 'endoAnes'], endo: true },
 ];
 
 const ENDO_NOTE = '【術前睡眠內視鏡檢查（選配）】\n' +
