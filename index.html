@@ -72,6 +72,7 @@ textarea { resize: vertical; min-height: 60px; }
 <option value="9">慢性扁桃腺炎（雙側）</option>
 <option value="10">打呼／舌根肥大（舌根成形+懸吊）</option>
 <option value="11">黏膜下鼻甲成形+腺樣體切除（OSAS）</option>
+<option value="12">兒童睡眠呼吸中止症（扁桃腺+腺樣體+下鼻甲）</option>
 </select>
 </div>
 
@@ -296,6 +297,15 @@ const TEMPLATES = [
     surgeryFee: 60000, anesthesiaFee: 10000,
     blogLink: 'https://entdrshih.blogspot.com/2020/11/blog-post_13.html',
     blogSearch: 'Google > blogspot 施淳文 鼻中隔 下鼻甲'
+  },
+  { // 12: 兒童睡眠呼吸中止症（扁桃腺+腺樣體+下鼻甲）
+    diagnosis: '兒童睡眠呼吸中止症',
+    surgery: '扁桃腺切除手術 腺樣體切除手術 下鼻甲切除手術',
+    anesthesia: '全身麻醉', stayDays: '三天兩夜',
+    items: ['c16','c17','c1','c4','c5','c15'],
+    surgeryFee: 0, anesthesiaFee: 10000,
+    blogLink: 'https://entdrshih.blogspot.com/2023/07/blog-post.html',
+    blogSearch: 'Google > blogspot 施淳文 睡眠呼吸中止症'
   },
 ];
 

@@ -1,6 +1,6 @@
 // Service worker — network-first for freshness, cache fallback for offline.
 // Bump CACHE when assets change to evict stale entries.
-const CACHE = 'surgery-form-v1';
+const CACHE = 'surgery-form-v2';
 const ASSETS = [
   './',
   './index.html',
