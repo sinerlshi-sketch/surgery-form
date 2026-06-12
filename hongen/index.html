@@ -61,6 +61,27 @@ textarea { resize: vertical; min-height: 60px; }
 <body>
 <h1>宏恩綜合醫院　手術自費表單</h1>
 
+<!-- Template Selection -->
+<div class="section">
+<div class="section-title">快速範本</div>
+<select id="template" onchange="loadTemplate()">
+<option value="">-- 選擇範本 --</option>
+<option value="0">鼻中膈+肥厚性鼻炎+鼻閥狹窄</option>
+<option value="1">鼻中膈+肥厚性鼻炎+鼻閥+鼻竇炎</option>
+<option value="2">鼻中膈+肥厚性鼻炎（基本）</option>
+<option value="3">肥厚性鼻炎+鼻涕倒流（雷射）</option>
+<option value="4">慢性鼻竇炎</option>
+<option value="5">睡眠呼吸中止症（懸雍垂+側咽）</option>
+<option value="6">睡眠呼吸中止症（懸雍垂）</option>
+<option value="7">慢性扁桃腺炎（左側）</option>
+<option value="8">慢性扁桃腺炎（右側）</option>
+<option value="9">慢性扁桃腺炎（雙側）</option>
+<option value="10">打呼／舌根肥大（舌根成形+懸吊）</option>
+<option value="11">黏膜下鼻甲成形+腺樣體切除（OSAS）</option>
+</select>
+<div class="note">耗材已對應宏恩品項，僅為起點；器械／止血劑請依實際刀法調整。</div>
+</div>
+
 <!-- Patient Info -->
 <div class="section">
 <div class="section-title">病患資料（選填）</div>
@@ -202,6 +223,70 @@ const CONSUMABLES = [
   { id: 'endoAnes', name: '睡眠內視鏡麻醉費', price: 10000 },
 ];
 
+// 範本沿用中心版的診斷／術式，耗材對應為宏恩品項代碼（imperfect 對應，僅作起點）。
+const TEMPLATES = [
+  { // 0 鼻中膈+肥厚+鼻閥
+    diagnosis: '鼻中膈彎曲，雙側肥厚性鼻炎，鼻閥狹窄',
+    surgery: '雙側鼻中膈鼻道成形手術 鼻閥成形手術',
+    anesthesia: '健保全身麻醉', stayDays: '兩天一夜至四天三夜',
+    items: ['h283', 'hemedx2', 'star'] },
+  { // 1 +鼻竇炎
+    diagnosis: '鼻中隔彎曲，慢性肥厚性鼻炎，鼻閥狹窄，雙側慢性鼻竇炎',
+    surgery: '雙側鼻中隔鼻道成形手術 鼻閥成形手術 雙側功能性鼻竇內視鏡手術',
+    anesthesia: '健保全身麻醉', stayDays: '兩天一夜至四天三夜',
+    items: ['h283', 'h293', 'hemedx2', 'star', 'or263'] },
+  { // 2 基本鼻中膈+肥厚
+    diagnosis: '鼻中膈彎曲，雙側肥厚性鼻炎',
+    surgery: '雙側鼻中膈鼻道成形手術',
+    anesthesia: '健保全身麻醉', stayDays: '兩天一夜至四天三夜',
+    items: ['h283', 'hemedx2', 'star', 'sinas'] },
+  { // 3 肥厚+鼻涕倒流 雷射
+    diagnosis: '雙側肥厚性鼻炎，鼻涕倒流',
+    surgery: '雙側鼻道成形手術 雷射後鼻神經燒灼手術',
+    anesthesia: '健保全身麻醉', stayDays: '兩天一夜至四天三夜',
+    items: ['h291', 'hemedx2', 'star'] },
+  { // 4 慢性鼻竇炎
+    diagnosis: '雙側慢性鼻竇炎',
+    surgery: '雙側多副鼻竇切除手術',
+    anesthesia: '健保全身麻醉', stayDays: '兩天一夜至四天三夜',
+    items: ['h293', 'hemedx2', 'star', 'sinas'] },
+  { // 5 睡眠呼吸中止（懸雍垂+側咽）
+    diagnosis: '阻塞睡眠呼吸中止症',
+    surgery: '懸雍垂成形手術 側咽成形手術',
+    anesthesia: '全身麻醉', stayDays: '三天兩夜',
+    items: ['h291', 'or262', 'hemedx2', 'mekal', 'endoTech', 'endoAnes'], endo: true },
+  { // 6 睡眠呼吸中止（懸雍垂）
+    diagnosis: '阻塞睡眠呼吸中止症',
+    surgery: '懸雍垂成形手術',
+    anesthesia: '全身麻醉', stayDays: '三天兩夜',
+    items: ['h291', 'star', 'hemedx2', 'sinas', 'mekal', 'endoTech', 'endoAnes'], endo: true },
+  { // 7 慢性扁桃腺炎（左）
+    diagnosis: '左側慢性扁桃腺炎',
+    surgery: '左側扁桃腺切除手術', purpose: '控制感染',
+    anesthesia: '全身麻醉', stayDays: '三天兩夜',
+    items: ['h295', 'star', 'hemedx2', 'sinas', 'mekal'] },
+  { // 8 慢性扁桃腺炎（右）
+    diagnosis: '右側慢性扁桃腺炎',
+    surgery: '右側扁桃腺切除手術', purpose: '控制感染',
+    anesthesia: '全身麻醉', stayDays: '三天兩夜',
+    items: ['h295', 'star', 'hemedx2', 'sinas', 'mekal'] },
+  { // 9 慢性扁桃腺炎（雙）
+    diagnosis: '雙側慢性扁桃腺炎',
+    surgery: '雙側扁桃腺切除手術', purpose: '控制感染',
+    anesthesia: '全身麻醉', stayDays: '三天兩夜',
+    items: ['h295', 'star', 'hemedx2', 'sinas', 'mekal'] },
+  { // 10 打呼／舌根肥大
+    diagnosis: '打呼，舌根肥大',
+    surgery: '舌根成形手術 舌根懸吊手術',
+    anesthesia: '全身麻醉', stayDays: '四天三夜',
+    items: ['hemedx2', 'star', 'h291', 'mekal', 'endoTech', 'endoAnes'], endo: true },
+  { // 11 黏膜下鼻甲成形+腺樣體切除
+    diagnosis: '雙側肥厚性鼻炎，阻塞睡眠呼吸中止症',
+    surgery: '雙側黏膜下鼻甲成形手術 腺樣體切除手術',
+    anesthesia: '全身麻醉', stayDays: '兩天一夜至四天三夜',
+    items: ['h283', 'hemedx2', 'star'] },
+];
+
 const ENDO_NOTE = '【術前睡眠內視鏡檢查（選配）】\n' +
   '可於術前做睡眠內視鏡檢查確定阻塞位置：技術費 $20,000、麻醉費 $10,000。\n' +
   '如同胃鏡舒眠麻醉，模擬睡眠狀態同時內視鏡檢查並錄影咽喉阻塞位置。可先門診檢查後回診討論，或安排住院當天中午檢查、隔天手術（此檢查以麻醉費＋技術費計）。\n' +
@@ -293,6 +378,32 @@ function calcTotal() {
   });
   total += parseInt(document.getElementById('miscFee').value) || 0;
   document.getElementById('totalDisplay').textContent = '$' + total.toLocaleString();
+}
+
+function loadTemplate() {
+  const idx = document.getElementById('template').value;
+  if (idx === '') return;
+  const t = TEMPLATES[idx];
+  document.getElementById('diagnosis').value = t.diagnosis;
+  document.getElementById('surgery').value = t.surgery;
+  document.getElementById('purpose').value = t.purpose || '';
+  document.getElementById('anesthesia').value = t.anesthesia;
+  document.getElementById('stayDays').value = t.stayDays;
+
+  // Reset all checkboxes then set template items
+  CONSUMABLES.forEach(item => {
+    if (!item.id) return;
+    const cb = document.getElementById(item.id);
+    if (cb) {
+      cb.checked = t.items.includes(item.id);
+      const div = cb.closest('.checkbox-item');
+      if (cb.checked) div.classList.add('checked');
+      else div.classList.remove('checked');
+    }
+  });
+  document.getElementById('endoNote').checked = !!t.endo;
+  calcTotal();
+  generate();
 }
 
 function generate() {

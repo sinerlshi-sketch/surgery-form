@@ -1,7 +1,7 @@
 // Service worker (宏恩) — network-first for freshness, cache fallback for offline.
 // Scope ./ = /surgery-form/hongen/ , isolated from the 中心 PWA at the repo root.
 // Bump CACHE when assets change to evict stale entries.
-const CACHE = 'hongen-form-v1';
+const CACHE = 'hongen-form-v2';
 const ASSETS = [
   './',
   './index.html',
