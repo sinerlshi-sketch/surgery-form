@@ -124,11 +124,7 @@ textarea { resize: vertical; min-height: 60px; }
 </div>
 <div>
 <label>住院天數</label>
-<select id="stayDays">
-<option value="四天三夜">四天三夜</option>
-<option value="三天兩夜">三天兩夜</option>
-<option value="兩天一夜至四天三夜">兩天一夜至四天三夜</option>
-</select>
+<div style="font-size:14px;line-height:1.9;color:#333;background:#f8f9fa;border-radius:8px;padding:8px 10px;margin-bottom:10px;">兩天一夜、三天兩夜、四天三夜</div>
 </div>
 </div>
 <div class="row">
@@ -142,17 +138,9 @@ textarea { resize: vertical; min-height: 60px; }
 </div>
 </div>
 <label>房型</label>
-<select id="roomType" onchange="calcTotal()">
-<option value="健保床位（1/2/3人）免付差額|0">健保床位（1/2/3人）免付差額</option>
-<option value="雙人房 $2,700/晚|2700">雙人房 $2,700/晚（院內 2 床）</option>
-<option value="單人房 $3,700/晚|3700" selected>單人房 $3,700/晚（院內 2 床）</option>
-<option value="單人房 $4,250/晚|4250">單人房 $4,250/晚（院內 14 床）</option>
-<option value="一房一廳 $6,030/晚|6030">一房一廳 $6,030/晚（院內 1 床）</option>
-</select>
-<div class="bed-note">
-床位差額／天（健保床位免付差額）：<br>
-雙人房 $2,700（2 床）｜單人房 $3,700（2 床）／$4,250（14 床）｜一房一廳 $6,030（1 床）
-</div>
+<div style="font-size:14px;line-height:1.9;color:#333;background:#f8f9fa;border-radius:8px;padding:8px 10px;margin-bottom:10px;">健保／雙人／單人</div>
+<label>註記</label>
+<div style="font-size:14px;line-height:1.9;color:#333;background:#f8f9fa;border-radius:8px;padding:8px 10px;margin-bottom:10px;">週三住院，週四手術</div>
 </div>
 
 <!-- Consumables -->
@@ -376,12 +364,6 @@ function toggleItem(cb) {
   calcTotal();
 }
 
-function roomFee() {
-  const raw = document.getElementById('roomType').value;
-  const parts = raw.split('|');
-  return parseInt(parts[1]) || 0;
-}
-
 function calcTotal() {
   let total = 0;
   CONSUMABLES.forEach(item => {
@@ -401,7 +383,6 @@ function loadTemplate() {
   document.getElementById('surgery').value = t.surgery;
   document.getElementById('purpose').value = t.purpose || '';
   document.getElementById('anesthesia').value = t.anesthesia;
-  document.getElementById('stayDays').value = t.stayDays;
 
   // Reset all checkboxes then set template items
   CONSUMABLES.forEach(item => {
@@ -424,12 +405,10 @@ function generate() {
   const surgery = document.getElementById('surgery').value.trim();
   const purpose = document.getElementById('purpose').value.trim();
   const anesthesia = document.getElementById('anesthesia').value;
-  const stayDays = document.getElementById('stayDays').value;
   const admitDate = document.getElementById('admitDate').value.trim();
   const surgeryDateRaw = document.getElementById('surgeryDate').value.trim();
   const parsedDate = parseSurgeryDate(surgeryDateRaw);
   const surgeryDate = parsedDate ? `${parsedDate.y}/${parsedDate.m}/${parsedDate.d}` : surgeryDateRaw;
-  const roomLabel = document.getElementById('roomType').value.split('|')[0];
   const miscFee = parseInt(document.getElementById('miscFee').value) || 0;
 
   let lines = [];
@@ -455,10 +434,11 @@ function generate() {
   if (purpose) lines.push(`目的：${purpose}`);
   lines.push('');
   lines.push(`${anesthesia}`);
-  lines.push(`住院天數：${stayDays}`);
+  lines.push('住院天數：兩天一夜、三天兩夜、四天三夜');
   if (admitDate) lines.push(`住院日期：${admitDate}`);
   if (surgeryDate) lines.push(`手術日期：${surgeryDate}`);
-  lines.push(`房型：${roomLabel}`);
+  lines.push('房型：健保／雙人／單人');
+  lines.push('註記：週三住院，週四手術');
   lines.push('');
 
   // Consumables
