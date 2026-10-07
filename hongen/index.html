@@ -97,6 +97,7 @@ textarea { resize: vertical; min-height: 60px; }
 </div>
 <label>地址</label>
 <input type="text" id="pAddr">
+<button class="btn btn-generate" id="blankBtn" onclick="copyBlankForm()" style="margin:6px 0 0">複製空白病患資料表（貼給病人填寫）</button>
 </div>
 
 <!-- Diagnosis & Surgery -->
@@ -496,6 +497,25 @@ function generate() {
   lines.push(HOSPITAL_FOOTER);
 
   document.getElementById('preview').textContent = lines.join('\n');
+}
+
+const BLANK_PATIENT_FORM = [
+  '【宏恩醫院 手術資料】',
+  '請填寫以下資料後回傳，謝謝：',
+  '',
+  '姓名：',
+  '身份證字號：',
+  '生日：',
+  '電話：',
+  '地址：'
+].join('\n');
+
+function copyBlankForm() {
+  navigator.clipboard.writeText(BLANK_PATIENT_FORM).then(() => {
+    const btn = document.getElementById('blankBtn');
+    btn.textContent = '已複製！';
+    setTimeout(() => { btn.textContent = '複製空白病患資料表（貼給病人填寫）'; }, 2000);
+  });
 }
 
 function copyText() {
