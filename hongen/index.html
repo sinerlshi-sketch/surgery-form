@@ -160,15 +160,6 @@ textarea { resize: vertical; min-height: 60px; }
 <label>麻醉科指定費</label>
 <input type="number" id="anesthesiaFee" value="10000" step="1000" onchange="calcTotal()" oninput="calcTotal()">
 </div>
-<div class="fee-row">
-<label>單人房／雜費（約）</label>
-<input type="number" id="miscFee" value="20000" step="1000" onchange="calcTotal()" oninput="calcTotal()">
-</div>
-<div class="note">含單人房住院差額與雜支，依房型與天數調整（約值）。</div>
-<div class="toggle-line">
-<input type="checkbox" id="endoNote" onchange="generate()">
-<label for="endoNote">附「術前睡眠內視鏡檢查」衛教說明</label>
-</div>
 </div>
 
 <!-- Total -->
@@ -394,7 +385,6 @@ function calcTotal() {
   });
   total += parseInt(document.getElementById('surgeryFee').value) || 0;
   total += parseInt(document.getElementById('anesthesiaFee').value) || 0;
-  total += parseInt(document.getElementById('miscFee').value) || 0;
   document.getElementById('totalDisplay').textContent = '$' + total.toLocaleString();
 }
 
@@ -420,7 +410,6 @@ function loadTemplate() {
       else div.classList.remove('checked');
     }
   });
-  document.getElementById('endoNote').checked = !!t.endo;
   calcTotal();
   generate();
 }
@@ -434,7 +423,6 @@ function generate() {
   const surgeryDateRaw = document.getElementById('surgeryDate').value.trim();
   const parsedDate = parseSurgeryDate(surgeryDateRaw);
   const surgeryDate = parsedDate ? `${parsedDate.y}/${parsedDate.m}/${parsedDate.d}` : surgeryDateRaw;
-  const miscFee = parseInt(document.getElementById('miscFee').value) || 0;
   const surgeryFee = parseInt(document.getElementById('surgeryFee').value) || 0;
   const anesthesiaFee = parseInt(document.getElementById('anesthesiaFee').value) || 0;
 
@@ -488,15 +476,14 @@ function generate() {
 
   if (surgeryFee > 0) lines.push(`手術費：$${surgeryFee.toLocaleString()}`);
   if (anesthesiaFee > 0) lines.push(`麻醉科指定費：$${anesthesiaFee.toLocaleString()}`);
-  if (miscFee > 0) lines.push(`單人房／雜費（約）：$${miscFee.toLocaleString()}`);
 
-  let grandTotal = itemTotal + surgeryFee + anesthesiaFee + miscFee;
+  let grandTotal = itemTotal + surgeryFee + anesthesiaFee;
   lines.push('');
   lines.push(`自費總計（約）：$${grandTotal.toLocaleString()}`);
   lines.push('');
   lines.push('術後每週回診一次，需三到四週');
 
-  if (document.getElementById('endoNote').checked) {
+  if (selectedItems.some(it => it.id === 'endoTech' || it.id === 'endoAnes')) {
     lines.push('');
     lines.push(ENDO_NOTE);
   }
