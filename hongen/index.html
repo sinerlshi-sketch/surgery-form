@@ -153,6 +153,14 @@ textarea { resize: vertical; min-height: 60px; }
 <div class="section">
 <div class="section-title">其他費用</div>
 <div class="fee-row">
+<label>手術費</label>
+<input type="number" id="surgeryFee" value="0" step="1000" onchange="calcTotal()" oninput="calcTotal()">
+</div>
+<div class="fee-row">
+<label>麻醉科指定費</label>
+<input type="number" id="anesthesiaFee" value="10000" step="1000" onchange="calcTotal()" oninput="calcTotal()">
+</div>
+<div class="fee-row">
 <label>單人房／雜費（約）</label>
 <input type="number" id="miscFee" value="20000" step="1000" onchange="calcTotal()" oninput="calcTotal()">
 </div>
@@ -219,71 +227,85 @@ const TEMPLATES = [
     diagnosis: '鼻中膈彎曲，雙側肥厚性鼻炎，鼻閥狹窄',
     surgery: '雙側鼻中膈鼻道成形手術 鼻閥成形手術',
     anesthesia: '健保全身麻醉', stayDays: '兩天一夜至四天三夜',
+    surgeryFee: 0, anesthesiaFee: 10000,
     items: ['h283', 'hemed', 'star'] },
   { // 1 +鼻竇炎
     diagnosis: '鼻中隔彎曲，慢性肥厚性鼻炎，鼻閥狹窄，雙側慢性鼻竇炎',
     surgery: '雙側鼻中隔鼻道成形手術 鼻閥成形手術 雙側功能性鼻竇內視鏡手術',
     anesthesia: '健保全身麻醉', stayDays: '兩天一夜至四天三夜',
+    surgeryFee: 35000, anesthesiaFee: 10000,
     items: ['h283', 'h293', 'hemed', 'star', 'or263'] },
   { // 2 基本鼻中膈+肥厚
     diagnosis: '鼻中膈彎曲，雙側肥厚性鼻炎',
     surgery: '雙側鼻中膈鼻道成形手術',
     anesthesia: '健保全身麻醉', stayDays: '兩天一夜至四天三夜',
+    surgeryFee: 15000, anesthesiaFee: 10000,
     items: ['h283', 'hemed', 'star', 'sinas'] },
   { // 3 肥厚+鼻涕倒流 雷射
     diagnosis: '雙側肥厚性鼻炎，鼻涕倒流',
     surgery: '雙側鼻道成形手術 雷射後鼻神經燒灼手術',
     anesthesia: '健保全身麻醉', stayDays: '兩天一夜至四天三夜',
+    surgeryFee: 40000, anesthesiaFee: 10000,
     items: ['h291', 'hemed', 'star'] },
   { // 4 慢性鼻竇炎
     diagnosis: '雙側慢性鼻竇炎',
     surgery: '雙側多副鼻竇切除手術',
     anesthesia: '健保全身麻醉', stayDays: '兩天一夜至四天三夜',
+    surgeryFee: 0, anesthesiaFee: 10000,
     items: ['h293', 'hemed', 'star', 'sinas'] },
   { // 5 睡眠呼吸中止（懸雍垂+側咽）
     diagnosis: '阻塞睡眠呼吸中止症',
     surgery: '懸雍垂成形手術 側咽成形手術',
     anesthesia: '全身麻醉', stayDays: '三天兩夜',
+    surgeryFee: 20000, anesthesiaFee: 10000,
     items: ['h291', 'or262', 'hemed', 'mekal', 'endoTech', 'endoAnes'], endo: true },
   { // 6 睡眠呼吸中止（懸雍垂）
     diagnosis: '阻塞睡眠呼吸中止症',
     surgery: '懸雍垂成形手術',
     anesthesia: '全身麻醉', stayDays: '三天兩夜',
+    surgeryFee: 10000, anesthesiaFee: 10000,
     items: ['h291', 'star', 'hemed', 'sinas', 'mekal', 'endoTech', 'endoAnes'], endo: true },
   { // 7 慢性扁桃腺炎（左）
     diagnosis: '左側慢性扁桃腺炎',
     surgery: '左側扁桃腺切除手術', purpose: '控制感染',
     anesthesia: '全身麻醉', stayDays: '三天兩夜',
+    surgeryFee: 0, anesthesiaFee: 10000,
     items: ['h295', 'star', 'hemed', 'sinas', 'mekal'] },
   { // 8 慢性扁桃腺炎（右）
     diagnosis: '右側慢性扁桃腺炎',
     surgery: '右側扁桃腺切除手術', purpose: '控制感染',
     anesthesia: '全身麻醉', stayDays: '三天兩夜',
+    surgeryFee: 0, anesthesiaFee: 10000,
     items: ['h295', 'star', 'hemed', 'sinas', 'mekal'] },
   { // 9 慢性扁桃腺炎（雙）
     diagnosis: '雙側慢性扁桃腺炎',
     surgery: '雙側扁桃腺切除手術', purpose: '控制感染',
     anesthesia: '全身麻醉', stayDays: '三天兩夜',
+    surgeryFee: 0, anesthesiaFee: 10000,
     items: ['h295', 'star', 'hemed', 'sinas', 'mekal'] },
   { // 10 打呼／舌根肥大
     diagnosis: '打呼，舌根肥大',
     surgery: '舌根成形手術 舌根懸吊手術',
     anesthesia: '全身麻醉', stayDays: '四天三夜',
+    surgeryFee: 30000, anesthesiaFee: 10000,
     items: ['hemed', 'star', 'h291', 'mekal', 'endoTech', 'endoAnes'], endo: true },
   { // 11 黏膜下鼻甲成形+腺樣體切除
     diagnosis: '雙側肥厚性鼻炎，阻塞睡眠呼吸中止症',
     surgery: '雙側黏膜下鼻甲成形手術 腺樣體切除手術',
     anesthesia: '全身麻醉', stayDays: '兩天一夜至四天三夜',
+    surgeryFee: 60000, anesthesiaFee: 10000,
     items: ['h283', 'hemed', 'star'] },
   { // 12 兒童睡眠呼吸中止症（扁桃腺+腺樣體+下鼻甲）
     diagnosis: '兒童睡眠呼吸中止症',
     surgery: '扁桃腺切除手術 腺樣體切除手術 下鼻甲切除手術',
     anesthesia: '全身麻醉', stayDays: '三天兩夜',
+    surgeryFee: 0, anesthesiaFee: 10000,
     items: ['h295', 'h283', 'star', 'hemed', 'mekal'] },
   { // 13 睡眠呼吸中止症（會厭軟骨成形+側咽成形）
     diagnosis: '睡眠呼吸中止症',
     surgery: '會厭軟骨成形手術 側咽成形手術',
     anesthesia: '全身麻醉', stayDays: '三天兩夜',
+    surgeryFee: 20000, anesthesiaFee: 10000,
     items: ['h291', 'star', 'hemed', 'mekal', 'endoTech', 'endoAnes'], endo: true },
 ];
 
@@ -370,6 +392,8 @@ function calcTotal() {
     const cb = document.getElementById(item.id);
     if (cb && cb.checked) total += item.price;
   });
+  total += parseInt(document.getElementById('surgeryFee').value) || 0;
+  total += parseInt(document.getElementById('anesthesiaFee').value) || 0;
   total += parseInt(document.getElementById('miscFee').value) || 0;
   document.getElementById('totalDisplay').textContent = '$' + total.toLocaleString();
 }
@@ -382,6 +406,8 @@ function loadTemplate() {
   document.getElementById('surgery').value = t.surgery;
   document.getElementById('purpose').value = t.purpose || '';
   document.getElementById('anesthesia').value = t.anesthesia;
+  document.getElementById('surgeryFee').value = t.surgeryFee;
+  document.getElementById('anesthesiaFee').value = t.anesthesiaFee;
 
   // Reset all checkboxes then set template items
   CONSUMABLES.forEach(item => {
@@ -409,6 +435,8 @@ function generate() {
   const parsedDate = parseSurgeryDate(surgeryDateRaw);
   const surgeryDate = parsedDate ? `${parsedDate.y}/${parsedDate.m}/${parsedDate.d}` : surgeryDateRaw;
   const miscFee = parseInt(document.getElementById('miscFee').value) || 0;
+  const surgeryFee = parseInt(document.getElementById('surgeryFee').value) || 0;
+  const anesthesiaFee = parseInt(document.getElementById('anesthesiaFee').value) || 0;
 
   let lines = [];
   lines.push('宏恩綜合醫院　手術自費說明');
@@ -458,9 +486,11 @@ function generate() {
   });
   if (selectedItems.length > 0) lines.push(`耗材小計：$${itemTotal.toLocaleString()}`);
 
+  if (surgeryFee > 0) lines.push(`手術費：$${surgeryFee.toLocaleString()}`);
+  if (anesthesiaFee > 0) lines.push(`麻醉科指定費：$${anesthesiaFee.toLocaleString()}`);
   if (miscFee > 0) lines.push(`單人房／雜費（約）：$${miscFee.toLocaleString()}`);
 
-  let grandTotal = itemTotal + miscFee;
+  let grandTotal = itemTotal + surgeryFee + anesthesiaFee + miscFee;
   lines.push('');
   lines.push(`自費總計（約）：$${grandTotal.toLocaleString()}`);
   lines.push('');
